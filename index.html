@@ -1,1 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>FRAGWN</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #080808;
+            color: white;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #222;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+        }
+
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .hero h1 {
+            font-size: clamp(55px, 12vw, 130px);
+            font-weight: 900;
+            letter-spacing: 8px;
+        }
+
+        .hero p {
+            margin-top: 20px;
+            color: #aaa;
+            font-size: 18px;
+            max-width: 600px;
+        }
+
+        .buttons {
+            margin-top: 35px;
+        }
+
+        button {
+            padding: 14px 28px;
+            margin: 8px;
+            border: none;
+            border-radius: 8px;
+            background: white;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .secondary {
+            background: #181818;
+            color: white;
+            border: 1px solid #333;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #666;
+            border-top: 1px solid #222;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">FRAGWN</div>
+
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Explore</a>
+            <a href="#">Login</a>
+        </nav>
+    </header>
+
+    <main class="hero">
+
+        <h1>FRAGWN</h1>
+
+        <p>
+            Welcome to the next generation of social experiences,
+            gaming and community.
+        </p>
+
+        <div class="buttons">
+            <button onclick="startApp()">Get Started</button>
+            <button class="secondary" onclick="explore()">Explore</button>
+        </div>
+
+    </main>
+
+    <footer>
+        © 2026 FRAGWN. All rights reserved.
+    </footer>
+
+    <script>
+        function startApp() {
+            alert("FRAGWN is starting...");
+        }
+
+        function explore() {
+            alert("Explore FRAGWN coming soon!");
+        }
+    </script>
+
+</body>
+</html>
