@@ -141,4 +141,106 @@
     </script>
 
 </body>
+    <style>
+  #languageBox {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 9999;
+    background: #222;
+    color: white;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #777;
+  }
+
+  #languageSelect {
+    background: #222;
+    color: white;
+    border: none;
+    padding: 5px;
+    font-size: 14px;
+  }
+</style>
+
+<div id="languageBox">
+  🌐
+  <select id="languageSelect" aria-label="Choose language">
+    <option value="en">English</option>
+    <option value="gu">ગુજરાતી</option>
+    <option value="hi">हिन्दी</option>
+    <option value="te">తెలుగు</option>
+  </select>
+</div>
+
+<script>
+const translations = {
+  en: {
+    home: "Home",
+    explore: "Explore",
+    login: "Login",
+    welcome: "Welcome to the next generation of social experiences, gaming and community.",
+    start: "Get Started",
+    exploreBtn: "Explore FRAGWN"
+  },
+  gu: {
+    home: "હોમ",
+    explore: "શોધો",
+    login: "લૉગિન",
+    welcome: "સામાજિક અનુભવો, ગેમિંગ અને સમુદાયની નવી પેઢીમાં તમારું સ્વાગત છે.",
+    start: "શરૂ કરો",
+    exploreBtn: "FRAGWN શોધો"
+  },
+  hi: {
+    home: "होम",
+    explore: "खोजें",
+    login: "लॉगिन",
+    welcome: "सामाजिक अनुभवों, गेमिंग और समुदाय की अगली पीढ़ी में आपका स्वागत है।",
+    start: "शुरू करें",
+    exploreBtn: "FRAGWN देखें"
+  },
+  te: {
+    home: "హోమ్",
+    explore: "అన్వేషించండి",
+    login: "లాగిన్",
+    welcome: "కొత్త తరం సామాజిక అనుభవాలు, గేమింగ్ మరియు కమ్యూనిటీకి స్వాగతం.",
+    start: "ప్రారంభించండి",
+    exploreBtn: "FRAGWN చూడండి"
+  }
+};
+
+function changeLanguage(lang) {
+  const t = translations[lang];
+  if (!t) return;
+
+  const navLinks = document.querySelectorAll("header nav a");
+  if (navLinks.length >= 3) {
+    navLinks[0].textContent = t.home;
+    navLinks[1].textContent = t.explore;
+    navLinks[2].textContent = t.login;
+  }
+
+  const welcome = document.querySelector("main.hero p");
+  if (welcome) welcome.textContent = t.welcome;
+
+  const buttons = document.querySelectorAll("main.hero .buttons button");
+  if (buttons.length >= 2) {
+    buttons[0].textContent = t.start;
+    buttons[1].textContent = t.exploreBtn;
+  }
+
+  document.documentElement.lang = lang;
+  localStorage.setItem("fragwnLanguage", lang);
+}
+
+const languageSelect = document.getElementById("languageSelect");
+const savedLanguage = localStorage.getItem("fragwnLanguage") || "en";
+
+languageSelect.value = savedLanguage;
+languageSelect.addEventListener("change", function() {
+  changeLanguage(this.value);
+});
+
+changeLanguage(savedLanguage);
+</script>
 </html>
