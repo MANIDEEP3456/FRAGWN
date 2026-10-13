@@ -490,6 +490,9 @@ function saveLanguage(language) {
 
     // Update language buttons
     $$(".lang-btn").forEach(button => {
+       button.addEventListener("click", () => {
+    saveLanguage(button.dataset.lang);
+});
         const selected = button.dataset.lang === language;
 
         button.classList.toggle("active", selected);
