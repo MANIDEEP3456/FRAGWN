@@ -470,3 +470,144 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!translations[currentLang]) {
         currentLang = "en";
        
+}
+
+// Save the selected language
+function saveLanguage(language) {
+    if (!translations[language]) {
+        language = "en";
+    }
+
+    currentLang = language;
+
+    try {
+        localStorage.setItem("fragwn-lang", language);
+    } catch (error) {
+        console.warn("Language preference could not be saved.");
+    }
+
+    document.documentElement.lang = language;
+
+    // Update language buttons
+    $$(".lang-btn").forEach(button => {
+        const selected = button.dataset.lang === language;
+
+        button.classList.toggle("active", selected);
+        button.setAttribute("aria-pressed", String(selected));
+    });
+
+    // Translate text already present on the page
+    $$("[data-i18n]").forEach(element => {
+        let key = element.dataset.i18n;
+
+        // Match the naming used by the existing translation dictionary
+        const aliases = {
+            "hero.cta-primary": "hero.ctaPrimary",
+            "hero.cta-secondary": "hero.ctaSecondary",
+            "request.modal.title": "request.modalTitle",
+            "pros.button.join": "pros.join",
+            "pro.modal.title": "pros.modalTitle",
+            "pro.button.submit": "pros.submit",
+            "pro.note": "pros.note",
+            "contact.label.name": "contact.name",
+            "contact.label.email": "contact.email",
+            "contact.label.message": "contact.message",
+            "contact.button.submit": "contact.submit"
+        };
+
+        key = aliases[key] || key;
+
+        const value = getText(key, language);
+
+        if (value !== undefined && value !== null && value !== key) {
+            if (/<\/?(strong|em|b|i|br)>/i.test(value)) {
+                element.innerHTML = value;
+            } else {
+                element.textContent = value;
+            }
+        }
+    });
+}
+
+// Connect the four language buttons
+$$(".lang-btn").forEach(button => {
+    button.addEventListener("click", () => {
+        saveLanguage(button.dataset.lang);
+    });
+});
+
+// Open and close modal windows
+function openModal(modal) {
+    if (!modal) return;
+
+    modal.setAttribute("aria-hidden", "false");
+    modal.classList.add("active");
+    document.body.classList.add("modal-open");
+}
+
+function closeModal(modal) {
+    if (!modal) return;
+
+    modal.setAttribute("aria-hidden", "true");
+    modal.classList.remove("active");
+
+    if (!$(".modal.active")) {
+        document.body.classList.remove("modal-open");
+    }
+}
+
+// Connect modal buttons and close controls
+$$("[data-modal-target]").forEach(button => {
+    button.addEventListener("click", event => {
+        event.preventDefault();
+
+        const target = button.dataset.modalTarget;
+        openModal(document.querySelector(target));
+    });
+});
+
+$$("[data-modal-close], .modal-close").forEach(button => {
+    button.addEventListener("click", () => {
+        closeModal(button.closest(".modal"));
+    });
+});
+
+// Close a modal when the user taps its background
+$$(".modal").forEach(modal => {
+    modal.addEventListener("click", event => {
+        if (event.target === modal) {
+            closeModal(modal);
+        }
+    });
+});
+
+// Close modals with the Escape key
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+        $$(".modal.active").forEach(closeModal);
+    }
+});
+
+// Mobile navigation
+const menuToggle = $("#menu-toggle");
+const navMenu = $("#nav-menu");
+
+if (menuToggle && navMenu) {
+    menuToggle.addEventListener("click", () => {
+        const isOpen = navMenu.classList.toggle("active");
+
+        menuToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    $$("#nav-menu a").forEach(link => {
+        link.addEventListener("click", () => {
+            navMenu.classList.remove("active");
+            menuToggle.setAttribute("aria-expanded", "false");
+        });
+    });
+}
+
+// Initialize the saved language
+saveLanguage(currentLang);
+
+});
