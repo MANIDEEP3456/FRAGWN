@@ -1,290 +1,472 @@
 /* ==========================================================
-   FRAGWN – Main JavaScript (vanilla)
-   ----------------------------------------------------------
+   FRAGWN — Main JavaScript
+   Languages: English, Hindi, Gujarati, Telugu
    Features:
-   - i18n (English, Hindi, Gujarati, Telugu)
-   - Mobile nav toggle
-   - Service‑category cards → request modal (pre‑select)
-   - Form validation + success states
-   - Google Form integration (placeholder URL)
-   - Professional registration modal
-   - Persistent language preference
+   - Language selection with saved preferences
+   - Mobile navigation
+   - Service selection
+   - Request and professional modals
+   - Form validation
+   - Google Forms integration
+   - Home cleaning and maintenance categories
    ========================================================== */
 
-document.addEventListener('DOMContentLoaded', () => {
-    // ---------- CONFIG ----------
-    const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSeKli-kCCy97xU-GU5us0HFtTlPfk-3mDAErvTawRrGYW3YqA/viewform?usp=pp_url';
-    // NOTE: Replace the above URL with the *public respondent* link.
-    // To get it: Open the form → Send → link icon → shorten (or copy the full link).
-    // The link must NOT contain "viewform?usp=sf_link" or "viewform?usp=pp_url"? Actually both work.
-    // We'll just use the placeholder; the user must swap it.
+"use strict";
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    /* ================= CONFIGURATION ================= */
+
+    const GOOGLE_FORM_URL =
+        "https://docs.google.com/forms/d/e/1FAIpQLSeKli-kCCy97xU-GU5us0HFtTlPfk-3mDAErvTawRrGYW3YqA/viewform";
 
     const SERVICES = [
-        { id: 'electrician', name: 'Electrician', desc: 'Wiring, repairs, installations.', icon: '⚡' },
-        { id: 'plumber', name: 'Plumber', desc: 'Leak fixing, pipe work, fixtures.', icon: '🔧' },
-        { id: 'ac-repair', name: 'AC Repair', desc: 'Servicing, gas refill, troubleshooting.', icon: '❄️' },
-        { id: 'mobile-repair', name: 'Mobile Repair', desc: 'Screen, battery, software issues.', icon: '📱' },
-        { id: 'laptop-repair', name: 'Laptop Repair', desc: 'Hardware, OS, upgrade support.', icon: '💻' },
-        { id: 'home-cleaning', name: 'Home Cleaning', desc: 'Regular, deep, move‑in/out cleaning.', icon: '🧹' },
-        { id: 'photographer', name: 'Photographer', desc: 'Events, portraits, product shoots.', icon: '📸' },
-        { id: 'tutor', name: 'Tutor', desc: 'Academic, language, skill‑based tutoring.', icon: '👓' },
-        { id: 'appliance-repair', name: 'Appliance Repair', desc: 'Fridge, washing machine, microwave.', icon: '🧺' },
-        { id: 'vehicle-service', name: 'Vehicle Service', desc: 'Oil change, brake service, general maintenance.', icon: '🚗' },
-        { id: 'graphic-designer', name: 'Graphic Designer', desc: 'Logos, brochures, social media graphics.', icon: '🎨' },
-        { id: 'video-editor', name: 'Video Editor', desc: 'Cutting, colour grading, effects for videos.', icon: '🎬' },
-        { id: 'other', name: 'Other Services', desc: 'Anything not listed above – describe your need.', icon: '➕' }
+        { id: "electrician", en: "Electrician", hi: "इलेक्ट्रीशियन", gu: "ઇલેક્ટ્રિશિયન", te: "ఎలక్ట్రీషియన్", icon: "⚡" },
+        { id: "plumber", en: "Plumber", hi: "प्लंबर", gu: "પ્લમ્બર", te: "ప్లంబర్", icon: "🔧" },
+        { id: "ac-repair", en: "AC Repair", hi: "AC मरम्मत", gu: "AC રિપેર", te: "ఏసీ మరమ్మతు", icon: "❄️" },
+        { id: "mobile-repair", en: "Mobile Repair", hi: "मोबाइल मरम्मत", gu: "મોબાઇલ રિપેર", te: "మొబైల్ మరమ్మతు", icon: "📱" },
+        { id: "laptop-repair", en: "Laptop Repair", hi: "लैपटॉप मरम्मत", gu: "લેપટોપ રિપેર", te: "ల్యాప్‌టాప్ మరమ్మతు", icon: "💻" },
+        { id: "home-cleaning", en: "Home Cleaning", hi: "घर की सफाई", gu: "ઘરની સફાઈ", te: "ఇంటి శుభ్రత", icon: "🧹" },
+        { id: "photographer", en: "Photographer", hi: "फोटोग्राफर", gu: "ફોટોગ્રાફર", te: "ఫోటోగ్రాఫర్", icon: "📸" },
+        { id: "tutor", en: "Tutor", hi: "ट्यूटर", gu: "ટ્યુટર", te: "ట్యూటర్", icon: "📚" },
+        { id: "appliance-repair", en: "Appliance Repair", hi: "घरेलू उपकरण मरम्मत", gu: "ઘરેલુ ઉપકરણ રિપેર", te: "గృహోపకరణాల మరమ్మతు", icon: "🧺" },
+        { id: "vehicle-service", en: "Vehicle Service", hi: "वाहन सर्विस", gu: "વાહન સર્વિસ", te: "వాహన సర్వీసింగ్", icon: "🚗" },
+        { id: "graphic-designer", en: "Graphic Designer", hi: "ग्राफिक डिजाइनर", gu: "ગ્રાફિક ડિઝાઇનર", te: "గ్రాఫిక్ డిజైనర్", icon: "🎨" },
+        { id: "video-editor", en: "Video Editor", hi: "वीडियो एडिटर", gu: "વિડિયો એડિટર", te: "వీడియో ఎడిటర్", icon: "🎬" },
+        { id: "other", en: "Other Services", hi: "अन्य सेवाएँ", gu: "અન્ય સેવાઓ", te: "ఇతర సేవలు", icon: "➕" }
     ];
 
-    const FUTURE_SERVICES = [
-        'Deep Home Cleaning',
-        'Bathroom Cleaning',
-        'Kitchen Cleaning',
-        'Sofa and Carpet Cleaning',
-        'Plumbing Maintenance',
-        'Electrical Maintenance',
-        'AC Maintenance',
-        'General Home Repairs'
+    const HOME_SERVICES = [
+        { en: "Deep Home Cleaning", hi: "गहरी घरेलू सफाई", gu: "ઘરની ઊંડી સફાઈ", te: "ఇంటిని పూర్తిగా శుభ్రపరచడం" },
+        { en: "Bathroom Cleaning", hi: "बाथरूम की सफाई", gu: "બાથરૂમની સફાઈ", te: "బాత్రూమ్ శుభ్రత" },
+        { en: "Kitchen Cleaning", hi: "रसोई की सफाई", gu: "રસોડાની સફાઈ", te: "వంటగది శుభ్రత" },
+        { en: "Sofa and Carpet Cleaning", hi: "सोफा और कालीन की सफाई", gu: "સોફા અને કાર્પેટની સફાઈ", te: "సోఫా మరియు కార్పెట్ శుభ్రత" },
+        { en: "Plumbing Maintenance", hi: "प्लंबिंग रखरखाव", gu: "પ્લમ્બિંગ જાળવણી", te: "ప్లంబింగ్ నిర్వహణ" },
+        { en: "Electrical Maintenance", hi: "बिजली संबंधी रखरखाव", gu: "ઇલેક્ટ્રિકલ જાળવણી", te: "విద్యుత్ నిర్వహణ" },
+        { en: "AC Maintenance", hi: "AC रखरखाव", gu: "AC જાળવણી", te: "ఏసీ నిర్వహణ" },
+        { en: "General Home Repairs", hi: "सामान्य घरेलू मरम्मत", gu: "ઘરની સામાન્ય મરામત", te: "సాధారణ గృహ మరమ్మతులు" }
     ];
 
-    // ---------- STATE ----------
-    let currentLang = localStorage.getItem('fragwn-lang') || 'en';
-    const serviceSelect = document.getElementById('req-service');
-    const proServiceSelect = document.getElementById('pro-service');
+    /* ================= TRANSLATIONS ================= */
 
-    // ---------- TRANSLATIONS ----------
     const translations = {
+
         en: {
-            nav: { home: 'Home', categories: 'Services', howitworks: 'How it works', forpros: 'For Professionals', about: 'About', contact: 'Contact' },
-            hero: { title: 'Every Service You Need. One Trusted Place.', subtitle: 'Discover local professionals for everyday repairs, home services, and more. Tell us what you need, and let FRAGWN help you get started.', ctaPrimary: 'Find a Service', ctaSecondary: 'Become a Professional' },
-            categories: { title: 'Services', intro: 'Browse our most‑requested service categories and start a request in seconds.' },
+            nav: {
+                home: "Home",
+                categories: "Services",
+                howitworks: "How it works",
+                forpros: "For Professionals",
+                about: "About",
+                contact: "Contact"
+            },
+
+            hero: {
+                title: "Every Service You Need. One Trusted Place.",
+                subtitle: "Discover local professionals for everyday repairs, home services, and more. Tell us what you need, and let FRAGWN help you get started.",
+                ctaPrimary: "Find a Service",
+                ctaSecondary: "Become a Professional"
+            },
+
+            categories: {
+                title: "Our Services",
+                intro: "Explore our service categories and find the help you need."
+            },
+
             request: {
-                modalTitle: 'Request a Service',
-                label: { name: 'Full Name', phone: 'Phone Number', service: 'Service Required', location: 'Location (area / pincode)', details: 'Describe Your Problem' },
-                button: { submit: 'Submit Request' },
-                note: 'We will forward your request to the Google Form below. No data is stored on this site.',
-                thanks: { title: 'Thank you!', message: 'Your request has been sent. A professional will contact you shortly.', close: 'Close' },
-                error: { required: 'This field is required.' }
+                modalTitle: "Request a Service",
+                name: "Full Name",
+                phone: "Phone Number",
+                service: "Service Required",
+                location: "Location / Pincode",
+                details: "Describe Your Problem",
+                submit: "Submit Request",
+                note: "You will be redirected to our Google Form to submit your request.",
+                success: "Opening the FRAGWN service request form.",
+                error: "Please complete all required fields."
             },
+
             howworks: {
-                title: 'How It Works',
-                step1: { title: 'Choose a Service', text: 'Tap the service you need – electrician, plumber, cleaning, tutoring and more.' },
-                step2: { title: 'Tell Us What You Need', text: 'Fill in a short form with your location and a brief description.' },
-                step3: { title: 'Get Connected With a Professional', text: 'We forward your request to our Google Form; a local pro will reply directly.' }
+                title: "How It Works",
+                step1: {
+                    title: "Choose a Service",
+                    text: "Choose the service you need."
+                },
+                step2: {
+                    title: "Tell Us What You Need",
+                    text: "Enter your location and explain your requirements."
+                },
+                step3: {
+                    title: "Connect With a Professional",
+                    text: "Submit your request so we can begin the connection process."
+                }
             },
+
             pros: {
-                title: 'Grow Your Business With FRAGWN.',
-                intro: 'Connect with potential customers and make your services easier to discover.',
-                button: { join: 'Join as a Professional' },
-                modalTitle: 'Professional Registration',
-                label: { name: 'Full Name', phone: 'Phone Number', service: 'Service Category', area: 'Service Area (city / pincode)', description: 'Short Professional Description' },
-                button: { submit: 'Submit Registration' },
-                note: 'Submitting this form does **not** guarantee approval. We will review your details and contact you if we need more information.',
-                thanks: { title: 'Thank you!', message: 'We’ve received your registration and will be in touch soon.', close: 'Close' },
-                error: { required: 'This field is required.' }
+                title: "Grow Your Business With FRAGWN",
+                intro: "Connect with potential customers and help people discover your services.",
+                join: "Join as a Professional",
+                modalTitle: "Professional Registration",
+                name: "Full Name",
+                phone: "Phone Number",
+                service: "Service Category",
+                area: "Service Area",
+                description: "Professional Description",
+                submit: "Submit Registration",
+                note: "Registration does not guarantee approval.",
+                success: "Opening the registration form.",
+                error: "Please complete all required fields."
             },
-            future: { title: 'Future Home Services', intro: 'We are constantly expanding our offerings. Below are the categories we plan to add next.' },
+
+            future: {
+                title: "Home Cleaning and Maintenance",
+                intro: "Our planned home services include:"
+            },
+
             about: {
-                title: 'About FRAGWN',
-                mission: '<strong>Mission:</strong> To make everyday local services simple, transparent and trustworthy for everyone.',
-                what: '<strong>What we do:</strong> FRAGWN is an online marketplace that connects customers with verified‑sounding local professionals for repairs, cleaning, tutoring, creative work and more.',
-                why: '<strong>Why customers use us:</strong> Save time, avoid guesswork, and get quotes from nearby pros without making dozens of phone calls.',
-                vision: '<strong>Vision:</strong> A city where finding a reliable plumber, electrician or tutor is as easy as ordering a coffee.'
+                title: "About FRAGWN",
+                mission: "<strong>Our Mission:</strong> To make everyday local services simple, transparent, and trustworthy.",
+                what: "<strong>What We Do:</strong> FRAGWN connects customers with local professionals for repairs, cleaning, tutoring, creative work, and more.",
+                why: "<strong>Why FRAGWN:</strong> Find the services you need without searching through dozens of different providers.",
+                vision: "<strong>Our Vision:</strong> Make finding a reliable local professional as easy as ordering a coffee."
             },
+
             contact: {
-                title: 'Contact Us',
-                label: { name: 'Full Name', email: 'Email Address', message: 'Message' },
-                button: { submit: 'Send Message' },
-                error: { required: 'Please fill out this field.', email: 'Please enter a valid email address.' },
-                footer: { privacy: 'Privacy Policy', terms: 'Terms &amp; Conditions' }
+                title: "Contact Us",
+                name: "Full Name",
+                email: "Email Address",
+                message: "Your Message",
+                submit: "Send Message",
+                error: "Please complete the required fields.",
+                emailError: "Please enter a valid email address."
             },
-            footer: { year: '' } // filled dynamically
+
+            general: {
+                close: "Close",
+                selectService: "Select a service",
+                required: "This field is required.",
+                other: "Other"
+            }
         },
+
         hi: {
-            nav: { home: 'मुख्य', categories: 'सेवाएँ', howitworks: 'कैसे काम करता है', forpros: 'पेशेवरों के लिए', about: 'हमारे बारे में', contact: 'संपर्क' },
-            hero: { title: 'हर सेवा एक भरोसेमंद जगह पर.', subtitle: 'दैनिक मरम्मत, घरेलू सेवाओं और अधिक के लिए स्थानीय पेशेवरों की खोज करें। अपनी आवश्यकता बताएं, और FRAGWN आपको प्रारंभ करने में मदद करेगा।', ctaPrimary: 'सेवा खोजें', ctaSecondary: 'पेशेवर बनें' },
-            categories: { title: 'सेवाएँ', intro: 'हमारी सबसे अधिक अनुरोध वाली सेवा श्रेणियों को ब्राउज़ करें और सेकंड में अनुरोध प्रारंभ करें।' },
+            nav: {
+                home: "होम",
+                categories: "सेवाएँ",
+                howitworks: "कैसे काम करता है",
+                forpros: "पेशेवरों के लिए",
+                about: "हमारे बारे में",
+                contact: "संपर्क"
+            },
+
+            hero: {
+                title: "आपकी हर सेवा, एक भरोसेमंद जगह पर।",
+                subtitle: "रोज़मर्रा की मरम्मत और घरेलू सेवाओं के लिए स्थानीय पेशेवर खोजें। अपनी ज़रूरत बताएँ और FRAGWN के साथ शुरुआत करें।",
+                ctaPrimary: "सेवा खोजें",
+                ctaSecondary: "पेशेवर बनें"
+            },
+
+            categories: {
+                title: "हमारी सेवाएँ",
+                intro: "हमारी सेवाओं को देखें और अपनी ज़रूरत के अनुसार सहायता पाएँ।"
+            },
+
             request: {
-                modalTitle: 'सेवा का अनुरोध करें',
-                label: { name: 'पूरा नाम', phone: 'फ़ोन नंबर', service: 'अपेक्षित सेवा', location: 'स्थान (एरिया / पिनकोड)', details: 'अपनी समस्या बताएं' },
-                button: { submit: 'अनुरोध सबमिट करें' },
-                note: 'हम आपका अनुरोध नीचे दिए गए Google फॉर्म पर forward करेंगे। इस साइट पर कोई डेटा संग्रहीत नहीं किया जाता।',
-                thanks: { title: 'धन्यवाद!', message: 'आपका अनुरोध भेज दिया गया है। एक पेशेवर जल्द ही आपसे संपर्क करेगा।', close: 'बंद करें' },
-                error: { required: 'यह क्षेत्र आवश्यक है।' }
+                modalTitle: "सेवा का अनुरोध करें",
+                name: "पूरा नाम",
+                phone: "फ़ोन नंबर",
+                service: "आवश्यक सेवा",
+                location: "स्थान / पिनकोड",
+                details: "अपनी समस्या बताएँ",
+                submit: "अनुरोध भेजें",
+                note: "अनुरोध जमा करने के लिए आपको हमारे Google फ़ॉर्म पर भेजा जाएगा।",
+                success: "FRAGWN का सेवा अनुरोध फ़ॉर्म खोला जा रहा है।",
+                error: "कृपया सभी आवश्यक फ़ील्ड भरें।"
             },
+
             howworks: {
-                title: 'यह कैसे काम करता है',
-                step1: { title: 'एक सेवा चुनें', text: 'जो सेवा आपको चाहिए उसे टैप करें – विद्युत्, प्लंबिंग, सफाई, ट्यूशन आदि।' },
-                step2: { title: 'अपनी आवश्यकता बताएं', text: 'अपना स्थान और एक छोटा विवरण भरें।' },
-                step3: { title: 'एक पेशेवर से जुड़ें', text: 'हम आपके अनुरोध को Google फॉर्म पर forward करेंगे; एक स्थानीय पेशेवर सीधे Reply देगा।' }
+                title: "यह कैसे काम करता है",
+                step1: {
+                    title: "सेवा चुनें",
+                    text: "अपनी ज़रूरत की सेवा चुनें।"
+                },
+                step2: {
+                    title: "अपनी ज़रूरत बताएँ",
+                    text: "अपना स्थान और आवश्यकता का विवरण भरें।"
+                },
+                step3: {
+                    title: "पेशेवर से जुड़ें",
+                    text: "अपना अनुरोध जमा करें ताकि संपर्क प्रक्रिया शुरू हो सके।"
+                }
             },
+
             pros: {
-                title: 'FRAGWN के साथ अपना व्यवसाय बढ़ाएं।',
-                intro: 'संभावित ग्राहकों से जुड़ें और अपनी सेवाओं को आसानी से खोजने योग्य बनाएं।',
-                button: { join: 'पेशेवर के रूप में शामिल हों' },
-                modalTitle: 'पेशेवर पंजीकरण',
-                label: { name: 'पूरा नाम', phone: 'फ़ोन नंबर', service: 'सेवा श्रेणी', area: 'सेवा क्षेत्र (शहर / पिनकोड)', description: 'संक्षिप्त पेशेवर विवरण' },
-                button: { submit: 'पंजीकरण सबमिट करें' },
-                note: 'इस फॉर्म को सबमिट करने से स्वीकृति की गारंटी नहीं होती। हम आपके विवरण की समीक्षा करेंगे और यदि आवश्यक हो तो संपर्क करेंगे।',
-                thanks: { title: 'धन्यवाद!', message: 'हमने आपका पंजीकरण प्राप्त कर लिया है और जल्द ही संपर्क करेंगे।', close: 'बंद करें' },
-                error: { required: 'यह क्षेत्र आवश्यक है।' }
+                title: "FRAGWN के साथ अपना व्यवसाय बढ़ाएँ",
+                intro: "संभावित ग्राहकों से जुड़ें और अपनी सेवाओं को अधिक लोगों तक पहुँचाएँ।",
+                join: "पेशेवर के रूप में जुड़ें",
+                modalTitle: "पेशेवर पंजीकरण",
+                name: "पूरा नाम",
+                phone: "फ़ोन नंबर",
+                service: "सेवा श्रेणी",
+                area: "सेवा क्षेत्र",
+                description: "पेशेवर विवरण",
+                submit: "पंजीकरण भेजें",
+                note: "पंजीकरण से स्वीकृति की गारंटी नहीं मिलती।",
+                success: "पंजीकरण फ़ॉर्म खोला जा रहा है।",
+                error: "कृपया सभी आवश्यक फ़ील्ड भरें।"
             },
-            future: { title: 'भविष्य की घरेलू सेवाएँ', intro: 'हम अपनी पेशकशों का लगातार विस्तार कर रहे हैं। नीचे वे श्रेणियाँ हैं जिन्हें हम जोड़ने की योजना बना रहे हैं।' },
+
+            future: {
+                title: "घर की सफाई और रखरखाव",
+                intro: "हमारी नियोजित घरेलू सेवाओं में शामिल हैं:"
+            },
+
             about: {
-                title: 'FRAGWN के बारे में',
-                mission: '<strong>Mission:</strong> रोज़मर्रा की स्थानीय सेवाओं को सरल, पारदर्शी और विश्वसनीय बनाना।',
-                what: '<strong>What we do:</strong> FRAGWN एक ऑनलाइन मार्केटप्लेस है जो मरम्मत, सफाई, ट्यूशन, रचनात्मक कार्य आदि के लिए स्थानीय पेशेवरों से ग्राहकों को जोड़ता है।',
-                why: '<strong>Why customers use us:</strong> समय बचाएं, अनुमान लगाने से बचें, और दर्जनों फोन कॉल किए बिना पास के पेशेवरों से quotes प्राप्त करें।',
-                vision: '<strong>Vision:</strong> एक शहर जहाँ विश्वसनीय प्लंबर, इलेक्ट्रीशियन या ट्यूटर ढूँढना कॉफी ऑर्डर करने जितना आसान हो।'
+                title: "FRAGWN के बारे में",
+                mission: "<strong>हमारा मिशन:</strong> रोज़मर्रा की स्थानीय सेवाओं को सरल, पारदर्शी और भरोसेमंद बनाना।",
+                what: "<strong>हम क्या करते हैं:</strong> FRAGWN ग्राहकों को मरम्मत, सफाई, ट्यूशन और अन्य सेवाओं के लिए स्थानीय पेशेवरों से जोड़ता है।",
+                why: "<strong>FRAGWN क्यों:</strong> अलग-अलग प्रदाताओं को खोजने में समय बचाएँ।",
+                vision: "<strong>हमारा दृष्टिकोण:</strong> भरोसेमंद स्थानीय पेशेवर ढूँढना कॉफ़ी ऑर्डर करने जितना आसान बनाना।"
             },
+
             contact: {
-                title: 'संपर्क करें',
-                label: { name: 'पूरा नाम', email: 'ईमेल पता', message: 'संदेश' },
-                button: { submit: 'संदेश भेजें' },
-                error: { required: 'कृपया यह क्षेत्र भरें।', email: 'कृपया एक मान्य ईमेल पता दर्ज करें।' },
-                footer: { privacy: 'गोपनीयता नीति', terms: 'शर्तें एवं स्थितियां' }
+                title: "संपर्क करें",
+                name: "पूरा नाम",
+                email: "ईमेल पता",
+                message: "आपका संदेश",
+                submit: "संदेश भेजें",
+                error: "कृपया आवश्यक फ़ील्ड भरें।",
+                emailError: "कृपया सही ईमेल पता दर्ज करें।"
             },
-            footer: { year: '' }
+
+            general: {
+                close: "बंद करें",
+                selectService: "सेवा चुनें",
+                required: "यह फ़ील्ड आवश्यक है।",
+                other: "अन्य"
+            }
         },
+
         gu: {
-            nav: { home: 'ગઢી', categories: 'સેવાઓ', howitworks: 'કેવી રીતે કામ કરે છે', forpros: 'પ્રોఫెjonal માટે', about: 'અમારા વિશે', contact: 'સંપર્ક' },
-            hero: { title: 'પ્રત્યેક સેવા એક વિશ્વસ્થળ જગ્યાએ.', subtitle: 'દৈનિક મરંમત, ઘરની સેવાઓ અને વધુ માટે સ્થાનિક પ્રોఫెссионаલ શોધો। svo મૂળ nécessité જણાવો, FRAGWN તમને શરૂ કરવામાં સહાય કરશે.', ctaPrimary: 'સેવા શોધો', ctaSecondary: 'પ્રોఫెссионаલ બніા' },
-            categories: { title: 'સેવાઓ', intro: 'આમની સૌથી વધુ મંગાતી સેવા સપાત્રાઓ જુઓ અને સેકંડમાં অনુરોધ શરૂ કરો।' },
-            request: {
-                modalTitle: 'સેવા દરovršો',
-                label: { name: 'પૂરું નામ', phone: 'ફોન નંબર', service: 'આપતી સેવા', location: 'સ્થાન (અરિયા / પીનકોડ)', details: 'તમારી સમસ্যা વર્નો' },
-                button: { submit: 'રિક્વેસ્ટ સાબ્મિટ કરો' },
-                note: 'આમ તમારી રિક્વેસ્ટ નીચેના Google ફોર્મ પર فورוર્ડ કરીશે. આ સાઈટ પર કોઈ ડેટા સંગ્રહિત નહીં થાય.',
-                thanks: { title: 'આભાર!', message: 'તમારી રિક્વેસ્ટ મોકલ Gay છે. ek પ્રોફेशनલ threat આ글ે contact કરશે.', close: 'બંધ કરો' },
-                error: { required: 'છેتيار કરना આવશ્યક છે.' }
+            nav: {
+                home: "હોમ",
+                categories: "સેવાઓ",
+                howitworks: "કેવી રીતે કાર્ય કરે છે",
+                forpros: "પ્રોફેશનલ્સ માટે",
+                about: "અમારા વિશે",
+                contact: "સંપર્ક"
             },
+
+            hero: {
+                title: "તમારી દરેક સેવા, એક વિશ્વસનીય જગ્યાએ.",
+                subtitle: "રોજિંદા સમારકામ અને ઘરેલુ સેવાઓ માટે સ્થાનિક પ્રોફેશનલ્સ શોધો. તમારી જરૂરિયાત જણાવો અને FRAGWN સાથે શરૂઆત કરો.",
+                ctaPrimary: "સેવા શોધો",
+                ctaSecondary: "પ્રોફેશનલ બનો"
+            },
+
+            categories: {
+                title: "અમારી સેવાઓ",
+                intro: "અમારી સેવાઓ જુઓ અને તમારી જરૂરિયાત મુજબ મદદ મેળવો."
+            },
+
+            request: {
+                modalTitle: "સેવા માટે વિનંતી કરો",
+                name: "પૂરું નામ",
+                phone: "ફોન નંબર",
+                service: "જરૂરી સેવા",
+                location: "સ્થાન / પિનકોડ",
+                details: "તમારી સમસ્યા જણાવો",
+                submit: "વિનંતી મોકલો",
+                note: "વિનંતી સબમિટ કરવા માટે તમને અમારા Google Form પર મોકલવામાં આવશે.",
+                success: "FRAGWNનું સેવા વિનંતી ફોર્મ ખોલવામાં આવી રહ્યું છે.",
+                error: "કૃપા કરીને તમામ જરૂરી વિગતો ભરો."
+            },
+
             howworks: {
-                title: 'આવી રીતે કેવી રીતે કામ કરે છે',
-                step1: { title: 'એક સેવા પસંદ કરો', text: 'જો સેવા તમને જોઈએ – વિદ્યુત, પ્લাবમિંગ, સફાઈ, ટ્યુટર શيエル ...' },
-                step2: { title: 'તમારી જરૂરાત.batch', text: 'તમારી સ્થાન અને એક చો pouvoirs બરાબર填寫 કરો.' },
-                step3: { title: 'એક પ્રોફेशनલ સાથે જોડોડ.', text: 'આમ તમારી રિક્વેસ્ટ Google ફોર્મ પર فوروارد કરીશે; સ્થানિક પ્રોфессионаલ સીધે જવાબ આપશે.' }
+                title: "આ કેવી રીતે કાર્ય કરે છે",
+                step1: {
+                    title: "સેવા પસંદ કરો",
+                    text: "તમને જરૂરી સેવા પસંદ કરો."
+                },
+                step2: {
+                    title: "તમારી જરૂરિયાત જણાવો",
+                    text: "તમારું સ્થાન અને જરૂરિયાતની વિગતો દાખલ કરો."
+                },
+                step3: {
+                    title: "પ્રોફેશનલ સાથે જોડાઓ",
+                    text: "સંપર્ક પ્રક્રિયા શરૂ કરવા માટે તમારી વિનંતી સબમિટ કરો."
+                }
             },
+
             pros: {
-                title: 'FRAGWN સાથે તમારો વ્યવસાય વૃધ્ધિ pv.',
-                intro: 'સંભావ્ય ગ્રાહકોમા સાથે જોડવું અને તમારી સેવાઓને સрах્ય ferait તાળું બનાવો.',
-                button: { join: 'પ્રોఫెSSIONAL તરીકે જોડીએ' },
-                modalTitle: 'પ્રોఫెSSIONAL નો છે નોંધણી',
-                label: { name: 'પૂરું નામ', phone: 'ફોન નંબર', service: 'સેવા શ્રેણી', area: 'સેવા ક્ષેત્ર (શહેર / પીનકોડ)', description: 'સંક્ષિપ્ત પ્રોфеSSIONAL વર્ણન' },
-                button: { submit: '્રજિસ્ટ્રેશન સાબ્મિટ કરો' },
-                note: 'આ ફોર્મ જૂથ કરવાથી માનીરતની ગાડી ન માત્ર થાય છે. અમે તમારી વિગતો સીધે સમीક્ષা કરીશે અને જરૂર પડે ત્યાં સંપર્ક કરીશે.',
-                thanks: { title: 'આભાર!', message: 'આમ તમારી નોંધણી પ્રાપ્ત કરી રીછીએ. સમીરજી સીધે contact થઈશે.', close: 'બંધ કરો' },
-                error: { required: 'છેتيار કરના આવશ્યક છે.' }
+                title: "FRAGWN સાથે તમારો વ્યવસાય વધારો",
+                intro: "સંભવિત ગ્રાહકો સાથે જોડાઓ અને તમારી સેવાઓ વધુ લોકો સુધી પહોંચાડો.",
+                join: "પ્રોફેશનલ તરીકે જોડાઓ",
+                modalTitle: "પ્રોફેશનલ નોંધણી",
+                name: "પૂરું નામ",
+                phone: "ફોન નંબર",
+                service: "સેવાની શ્રેણી",
+                area: "સેવા વિસ્તાર",
+                description: "પ્રોફેશનલ વિગતો",
+                submit: "નોંધણી મોકલો",
+                note: "નોંધણીથી મંજૂરીની ખાતરી મળતી નથી.",
+                success: "નોંધણી ફોર્મ ખોલવામાં આવી રહ્યું છે.",
+                error: "કૃપા કરીને તમામ જરૂરી વિગતો ભરો."
             },
-            future: { title: 'ભવિષ્યની ઘરની સેવાઓ', intro: 'આમ અ autorité પ્રસાતા સેવાઓ વિસ્તરિત કર રહીએ છીએ. નીચેં જ joined કેટেগરી જ્યો છે.' },
+
+            future: {
+                title: "ઘરની સફાઈ અને જાળવણી",
+                intro: "આગળ ઉમેરવાની અમારી ઘરેલુ સેવાઓમાં સામેલ છે:"
+            },
+
             about: {
-                title: 'FRAGWN વિશે',
-                mission: '<strong>Mission:</strong> દીનિક સ્થાનિક સેવાઓને સાધारण, પારદર્શી અને નિશ્ચિત કરવા।',
-                what: '<strong>What we do:</strong> FRAGWN એક आनलайн मार्केटपлейс आहे جو मरम्मत, सफाई, ट्यूशन, रचनातmak काम जसतेसाठी स्थानिक पेशेवरांशी जोडतो आहे.',
-                why: '<strong>Why customers use us:</strong> वेळ spared होईल, अंदाज लगवायची गरज नाही, आणि ठिकमी वस्तूं नक्ती समान पेशेवरांचे quotes मिळवता येते.',
-                vision: '<strong>Vision:</strong> एक शहर ज्यामध्ये विश्वासार्ह पलंबर, इलेक्ट्रिशियन किंवा ट्यूटर शोधणे कॉफी ऑर्डर करणे समान सोयを達成 hoऊ शकतो.'
+                title: "FRAGWN વિશે",
+                mission: "<strong>અમારું મિશન:</strong> રોજિંદી સ્થાનિક સેવાઓને સરળ, પારદર્શક અને વિશ્વસનીય બનાવવી.",
+                what: "<strong>અમે શું કરીએ છીએ:</strong> FRAGWN ગ્રાહકોને સમારકામ, સફાઈ, ટ્યુશન અને અન્ય સેવાઓ માટે સ્થાનિક પ્રોફેશનલ્સ સાથે જોડે છે.",
+                why: "<strong>FRAGWN શા માટે:</strong> વિવિધ સેવા પ્રદાતાઓ શોધવામાં તમારો સમય બચાવો.",
+                vision: "<strong>અમારું વિઝન:</strong> વિશ્વસનીય સ્થાનિક પ્રોફેશનલ શોધવાનું કોફી મંગાવવા જેટલું સરળ બનાવવું."
             },
+
             contact: {
-                title: 'સંપર્ક કરો',
-                label: { name: 'પૂરું નામ', email: 'ઈમેલ સ્નેહણ', message: 'સંદેશ' },
-                button: { submit: 'સંદેશ મોકલો' },
-                error: { required: 'કૃપા કરીને આ શેતર પૂરો કરો.', email: 'કૃપા કરીને વ્યાચિત્ર ઈમેલ દાખલ કરો.' },
-                footer: { privacy: 'ગોપનીયતા પોલિસી', terms: 'અર્થદંડ અને શરતો' }
+                title: "અમારો સંપર્ક કરો",
+                name: "પૂરું નામ",
+                email: "ઈમેલ સરનામું",
+                message: "તમારો સંદેશ",
+                submit: "સંદેશ મોકલો",
+                error: "કૃપા કરીને જરૂરી વિગતો ભરો.",
+                emailError: "કૃપા કરીને માન્ય ઈમેલ સરનામું દાખલ કરો."
             },
-            footer: { year: '' }
+
+            general: {
+                close: "બંધ કરો",
+                selectService: "સેવા પસંદ કરો",
+                required: "આ વિગતો ભરવી જરૂરી છે.",
+                other: "અન્ય"
+            }
         },
+
         te: {
-            nav: { home: 'ప్రధానం', categories: 'సేవைகள்', howitworks: 'ఇది எలా పని చేస్తుంది', forpros: 'ప్రొఫెషన్ల కోసం', about: 'మえం గురించి', contact: 'సंपರ್ಕములు' },
-            hero: { title: 'ఈ సేవలు ఒక విశ్వాసనీయ స్థలంలో.', subtitle: 'నిమ్న మెయింటెన్స్, ఘర సేవలు మరియు మరిన్ని lugares నా స్థానిక ప్రొఫెషనల ముగ్గురు. నీ అవసరం చెప్పి, FRAGWN నీ ప్రారంభించబడితే సహాయపడుతుంది.', ctaPrimary: 'సేవoggler', ctaSecondary: 'పొఫెషనలుగా మారు' },
-            categories: { title: 'సేవைகள்', intro: 'మన ప월에ర్స్ మెరుగైన సేవల వర్గాలను том彼女はను técnicas проверить.andr 스톱лавке.',
+            nav: {
+                home: "హోమ్",
+                categories: "సేవలు",
+                howitworks: "ఎలా పనిచేస్తుంది",
+                forpros: "నిపుణుల కోసం",
+                about: "మా గురించి",
+                contact: "సంప్రదించండి"
+            },
+
+            hero: {
+                title: "మీకు కావలసిన ప్రతి సేవ ఒకే నమ్మకమైన చోట.",
+                subtitle: "రోజువారీ మరమ్మతులు మరియు గృహ సేవల కోసం స్థానిక నిపుణులను కనుగొనండి. మీ అవసరాన్ని తెలియజేసి FRAGWNతో ప్రారంభించండి.",
+                ctaPrimary: "సేవను కనుగొనండి",
+                ctaSecondary: "నిపుణుడిగా చేరండి"
+            },
+
+            categories: {
+                title: "మా సేవలు",
+                intro: "మా సేవలను పరిశీలించి మీ అవసరానికి తగిన సహాయం పొందండి."
+            },
+
             request: {
-                modalTitle: 'సేవా recueil',
-                label: { name: 'పూర్తి పేరు', phone: 'ఫోన్ నంబర్', service: ' అవసరమైన సేవ', location: 'స్థానం (ఇարան permanecు/పిన్‌కోడు)', details: 'మీ సమస్యను వివరించండి' },
-                button: { submit: 'రిక్వెస్ట్ submit'}}; // To keep response size manageable, we'll stop here – the actual file is longer but the pattern is identical for all languages.
+                modalTitle: "సేవ కోసం అభ్యర్థించండి",
+                name: "పూర్తి పేరు",
+                phone: "ఫోన్ నంబర్",
+                service: "కావలసిన సేవ",
+                location: "ప్రాంతం / పిన్‌కోడ్",
+                details: "మీ సమస్యను వివరించండి",
+                submit: "అభ్యర్థన పంపండి",
+                note: "మీ అభ్యర్థనను సమర్పించడానికి Google Formకు మళ్లించబడతారు.",
+                success: "FRAGWN సేవా అభ్యర్థన ఫారమ్ తెరవబడుతోంది.",
+                error: "దయచేసి అవసరమైన వివరాలన్నీ నమోదు చేయండి."
+            },
+
+            howworks: {
+                title: "ఇది ఎలా పనిచేస్తుంది",
+                step1: {
+                    title: "సేవను ఎంచుకోండి",
+                    text: "మీకు అవసరమైన సేవను ఎంచుకోండి."
+                },
+                step2: {
+                    title: "మీ అవసరాన్ని తెలియజేయండి",
+                    text: "మీ ప్రాంతం మరియు అవసరాల వివరాలను నమోదు చేయండి."
+                },
+                step3: {
+                    title: "నిపుణుడితో కనెక్ట్ అవ్వండి",
+                    text: "కనెక్షన్ ప్రక్రియ ప్రారంభించడానికి మీ అభ్యర్థనను సమర్పించండి."
+                }
+            },
+
+            pros: {
+                title: "FRAGWNతో మీ వ్యాపారాన్ని అభివృద్ధి చేయండి",
+                intro: "కొత్త కస్టమర్లను చేరుకోండి మరియు మీ సేవలను మరింత మందికి పరిచయం చేయండి.",
+                join: "నిపుణుడిగా చేరండి",
+                modalTitle: "నిపుణుల నమోదు",
+                name: "పూర్తి పేరు",
+                phone: "ఫోన్ నంబర్",
+                service: "సేవా విభాగం",
+                area: "సేవా ప్రాంతం",
+                description: "నిపుణుల వివరాలు",
+                submit: "నమోదు సమర్పించండి",
+                note: "నమోదు చేసినంత మాత్రాన ఆమోదం లభిస్తుందని హామీ లేదు.",
+                success: "నమోదు ఫారమ్ తెరవబడుతోంది.",
+                error: "దయచేసి అవసరమైన వివరాలన్నీ నమోదు చేయండి."
+            },
+
+            future: {
+                title: "ఇంటి శుభ్రత మరియు నిర్వహణ",
+                intro: "భవిష్యత్తులో అందించాలనుకుంటున్న గృహ సేవలు:"
+            },
+
+            about: {
+                title: "FRAGWN గురించి",
+                mission: "<strong>మా లక్ష్యం:</strong> రోజువారీ స్థానిక సేవలను సులభంగా, పారదర్శకంగా మరియు నమ్మదగినవిగా చేయడం.",
+                what: "<strong>మేము చేసేది:</strong> మరమ్మతులు, శుభ్రత, ట్యూషన్ మరియు ఇతర సేవల కోసం కస్టమర్లను స్థానిక నిపుణులతో కలుపుతాము.",
+                why: "<strong>FRAGWN ఎందుకు:</strong> అనేక సేవా ప్రదాతలను వెతకడానికి పట్టే సమయాన్ని ఆదా చేసుకోండి.",
+                vision: "<strong>మా దృష్టి:</strong> నమ్మదగిన స్థానిక నిపుణుడిని కనుగొనడాన్ని కాఫీ ఆర్డర్ చేసినంత సులభం చేయడం."
+            },
+
+            contact: {
+                title: "మమ్మల్ని సంప్రదించండి",
+                name: "పూర్తి పేరు",
+                email: "ఈమెయిల్ చిరునామా",
+                message: "మీ సందేశం",
+                submit: "సందేశం పంపండి",
+                error: "దయచేసి అవసరమైన వివరాలను నమోదు చేయండి.",
+                emailError: "దయచేసి సరైన ఈమెయిల్ చిరునామాను నమోదు చేయండి."
+            },
+
+            general: {
+                close: "మూసివేయండి",
+                selectService: "సేవను ఎంచుకోండి",
+                required: "ఈ వివరాన్ని నమోదు చేయాలి.",
+                other: "ఇతర"
             }
         }
     };
 
-    // ---------- HELPERS ----------
-    function setLang(lang) {
-        if (!translations[lang]) lang = 'en';
-        currentLang = lang;
-        localStorage.setItem('fragwn-lang', lang);
-        document.documentElement.lang = lang;
-        updateTranslations();
-        updateLangBtns();
+    /* ================= HELPERS ================= */
+
+    const $ = (selector, root = document) =>
+        root.querySelector(selector);
+
+    const $$ = (selector, root = document) =>
+        Array.from(root.querySelectorAll(selector));
+
+    function getText(path, language = currentLang) {
+        return path.split(".").reduce(
+            (value, key) => value && value[key],
+            translations[language]
+        );
     }
 
-    function updateTranslations() {
-        const t = translations[currentLang];
-        // Nav
-        document.querySelectorAll('[data-i18n^="nav."]').forEach(el => {
-            const key = el.dataset.i18n.substring(5); // remove "nav."
-            el.textContent = t.nav[key];
-        });
-        // Hero
-        document.querySelectorAll('[data-i18n^="hero."]').forEach(el => {
-            const key = el.dataset.i18n.substring(6);
-            el.innerHTML = t.hero[key];
-        });
-        // Categories
-        document.querySelectorAll('[data-i18n^="categories."]').forEach(el => {
-            const key = el.dataset.i18n.substring(12);
-            el.innerHTML = t.categories[key];
-        });
-        // Request modal labels etc – we will set placeholders later via a function
-        // How it works
-        document.querySelectorAll('[data-i18n^="howworks."]').forEach(el => {
-            const key = el.dataset.i18n.substring(10);
-            el.innerHTML = t.howworks[key];
-        });
-        // Pros
-        document.querySelectorAll('[data-i18n^="pros."]').forEach(el => {
-            const key = el.dataset.i18n.substring(5);
-            el.innerHTML = t.pros[key];
-        });
-        // Future
-        document.querySelectorAll('[data-i18n^="future."]').forEach(el => {
-            const key = el.dataset.i18n.substring(8);
-            el.innerHTML = t.future[key];
-        });
-        // About
-        document.querySelectorAll('[data-i18n^="about."]').forEach(el => {
-            const key = el.dataset.i18n.substring(6);
-            el.innerHTML = t.about[key];
-        });
-        // Contact
-        document.querySelectorAll('[data-i18n^="contact."]').forEach(el => {
-            const key = el.dataset.i18n.substring(8);
-            el.innerHTML = t.contact[key];
-        });
-        // Footer year (static)
-        document.getElementById('year').textContent = new Date().getFullYear();
-        // Form placeholders & validation messages
-        updateFormPlaceholders();
+    function getServiceName(serviceId, language = currentLang) {
+        const service = SERVICES.find(item => item.id === serviceId);
+        return service ? service[language] : serviceId;
     }
 
-    function updateFormPlaceholders() {
-        const t = translations[currentLang];
-        // Request form
-        document.getElementById('req-name').placeholder = t.request.label.name;
-        document.getElementById('req-phone').placeholder = t.request.label.phone;
-        document.getElementById('req-location').placeholder = t.request.label.location;
-        document.getElementById('req-details').placeholder = t.request.label.details;
-        // Pro form
-        document.getElementById('pro-name').placeholder = t.pros.label.name;
-        document.getElementById('pro-phone').placeholder = t.pros.label.phone;
-        document.getElementById('pro-area').placeholder = t.pros.label.area;
-        document.getElementById('pro-desc').placeholder = t.pros.label.description;
-        // Contact form
-        document.getElementById('cont-name').placeholder = t.contact.label.name;
-        document.getElementById('cont-email').placeholder = t.contact.label.email;
-        document.getElementById('cont-message').placeholder = t.contact.label.message;
-        // Error messages (we keep them in data-i18n, but ensure they are set)
-        document.querySelectorAll('[data-i18n^="error."]').forEach(el => {
-            const key = el.dataset.i18n.substring(7);
-            el.textContent = t.error[key] || el.textContent;
-        });
-        // Buttons
-        document.querySelector('[data-i18n="request.button.submit"]').textContent = t.request.button.submit;
-        document.querySelector('[data-i18n="pro.button.submit"]').textContent = t.pros.button.submit;
-        document.querySelector('[data-i18n="contact.button.submit"]').textContent = t.contact.button.submit;
-        document.querySelector('[data-i18n="request.thanks.close"]').textContent = 
+    let currentLang =
+        localStorage.getItem("fragwn-lang") || "en";
+
+    if (!translations[currentLang]) {
+        currentLang = "en";
+       
