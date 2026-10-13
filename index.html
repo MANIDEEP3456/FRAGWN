@@ -1,245 +1,292 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRAGWN – Local Services Marketplace</title>
+    <meta name="description" content="FRAGWN connects customers with trusted local service professionals. Find electricians, plumbers, cleaners, tutors and more – all in one trusted place.">
+    <!-- Open Graph (optional but nice for sharing) -->
+    <meta property="og:title" content="FRAGWN – Local Services Marketplace">
+    <meta property="og:description" content="Discover local professionals for everyday repairs, home services and more.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://YOURUSERNAME.github.io/FRAGWN/">
+    <meta property="og:image" content="https://YOURUSERNAME.github.io/FRAGWN/assets/og-image.jpg">
 
-    <title>FRAGWN</title>
+    <!-- Favicon (replace with your own if you have one) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>F</text></svg>">
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <!-- Google Fonts – modern, clean pair -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #080808;
-            color: white;
-            min-height: 100vh;
-        }
-
-        header {
-            width: 100%;
-            padding: 20px 8%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #222;
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: 900;
-            letter-spacing: 3px;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 25px;
-        }
-
-        .hero {
-            min-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 30px;
-        }
-
-        .hero h1 {
-            font-size: clamp(55px, 12vw, 130px);
-            font-weight: 900;
-            letter-spacing: 8px;
-        }
-
-        .hero p {
-            margin-top: 20px;
-            color: #aaa;
-            font-size: 18px;
-            max-width: 600px;
-        }
-
-        .buttons {
-            margin-top: 35px;
-        }
-
-        button {
-            padding: 14px 28px;
-            margin: 8px;
-            border: none;
-            border-radius: 8px;
-            background: white;
-            color: black;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        button:hover {
-            transform: scale(1.05);
-        }
-
-        .secondary {
-            background: #181818;
-            color: white;
-            border: 1px solid #333;
-        }
-
-        footer {
-            text-align: center;
-            padding: 25px;
-            color: #666;
-            border-top: 1px solid #222;
-        }
-    </style>
+    <!-- Core stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
-    <header>
-        <div class="logo">FRAGWN</div>
-
-        <nav>
-            <a href="#">Home</a>
-            <a href="#">Explore</a>
-            <a href="#">Login</a>
-        </nav>
+    <!-- ==================== Header / Nav ==================== -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="#" class="logo" aria-label="FRAGWN home">FRAGWN</a>
+            <button class="nav-toggle" aria-controls="primary-nav" aria-expanded="false" aria-label="Open menu">
+                <span class="sr-only">Open main menu</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <nav id="primary-nav" class="primary-nav">
+                <ul class="nav-list">
+                    <li><a href="#home" class="nav-link" data-i18n="nav.home">Home</a></li>
+                    <li><a href="#categories" class="nav-link" data-i18n="nav.categories">Services</a></li>
+                    <li><a href="#how-it-works" class="nav-link" data-i18n="nav.howitworks">How it works</a></li>
+                    <li><a href="#for-pros" class="nav-link" data-i18n="nav.forpros">For Professionals</a></li>
+                    <li><a href="#about" class="nav-link" data-i18n="nav.about">About</a></li>
+                    <li><a href="#contact" class="nav-link" data-i18n="nav.contact">Contact</a></li>
+                </ul>
+                <!-- Language selector (placed in nav for easy access) -->
+                <div class="lang-selector" aria-label="Language selector">
+                    <button class="lang-btn" data-lang="en" aria-pressed="false">English</button>
+                    <button class="lang-btn" data-lang="hi" aria-pressed="false">Hindi</button>
+                    <button class="lang-btn" data-lang="gu" aria-pressed="false">Gujarati</button>
+                    <button class="lang-btn" data-lang="te" aria-pressed="false">Telugu</button>
+                </div>
+            </nav>
+        </div>
     </header>
 
-    <main class="hero">
+    <!-- ==================== Main Content ==================== -->
+    <main class="site-main">
+        <!-- Home (Hero) -->
+        <section id="home" class="section hero-section" aria-labelledby="hero-heading">
+            <div class="container hero-inner">
+                <h1 id="hero-heading" class="hero-title" data-i18n="hero.title">Every Service You Need. One Trusted Place.</h1>
+                <p class="hero-subtitle" data-i18n="hero.subtitle">
+                    Discover local professionals for everyday repairs, home services, and more. Tell us what you need, and let FRAGWN help you get started.
+                </p>
+                <div class="hero-actions">
+                    <a href="#categories" class="btn btn-primary" data-i18n="hero.cta-primary">Find a Service</a>
+                    <a href="#for-pros" class="btn btn-secondary" data-i18n="hero.cta-secondary">Become a Professional</a>
+                </div>
+                <!-- Simple illustration – you can replace with your own SVG -->
+                <div class="hero-illustration">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" aria-hidden="true" focusable="false">
+                        <rect width="800" height="400" fill="#f8f9fa"/>
+                        <!-- Example icons – you can swap them -->
+                        <g transform="translate(100,50)">
+                            <circle cx="0" cy="0" r="30" fill="#e3f2fd"/>
+                            <path d="M-15 0 L15 0 M0 -15 L0 15" stroke="#1976d2" stroke-width="4"/>
+                        </g>
+                        <g transform="translate(300,120)">
+                            <rect x="-25" y="-25" width="50" height="50" fill="#fff3e0" rx="8"/>
+                            <path d="M-15 0 L15 0 M0 -15 L0 15" stroke="#ff9800" stroke-width="4"/>
+                        </g>
+                        <g transform="translate(500,80)">
+                            <rect x="-30" y="-20" width="60" height="40" fill="#e8f5e9" rx="6"/>
+                            <path d="M-20 0 L20 0 M0 -15 L0 15" stroke="#4caf50" stroke-width="4"/>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </section>
 
-        <h1>FRAGWN</h1>
+        <!-- Service Categories -->
+        <section id="categories" class="section categories-section" aria-labelledby="categories-heading">
+            <div class="container">
+                <h2 id="categories-heading" class="section-title" data-i18n="categories.title">Services</h2>
+                <p class="section-intro" data-i18n="categories.intro">
+                    Browse our most‑requested service categories and start a request in seconds.
+                </p>
+                <div id="categories-grid" class="categories-grid"></div>
+            </div>
+        </section>
 
-        <p>
-            Welcome to the next generation of social experiences,
-            gaming and community.
-        </p>
-
-        <div class="buttons">
-            <button onclick="startApp()">Get Started</button>
-            <button class="secondary" onclick="explore()">Explore</button>
+        <!-- Service Request Form (modal) -->
+        <div id="request-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-request-title">
+            <div class="modal-content">
+                <button class="modal-close" aria-label="Close form">&times;</button>
+                <h2 id="modal-request-title" class="modal-title" data-i18n="request.modal.title">Request a Service</h2>
+                <form id="request-form" class="request-form" novalidate>
+                    <div class="form-group">
+                        <label for="req-name" class="form-label" data-i18n="request.label.name">Full Name</label>
+                        <input type="text" id="req-name" name="fullName" class="form-input" required>
+                        <span class="error-message" data-i18n="error.required">This field is required.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="req-phone" class="form-label" data-i18n="request.label.phone">Phone Number</label>
+                        <input type="tel" id="req-phone" name="phone" class="form-input" required>
+                        <span class="error-message" data-i18n="error.required">This field is required.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="req-service" class="form-label" data-i18n="request.label.service">Service Required</label>
+                        <select id="req-service" name="service" class="form-input" required>
+                            <option value="" disabled selected>-- Select a service --</option>
+                        </select>
+                        <span class="error-message" data-i18n="error.required">Please choose a service.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="req-location" class="form-label" data-i18n="request.label.location">Location (area / pincode)</label>
+                        <input type="text" id="req-location" name="location" class="form-input" required>
+                        <span class="error-message" data-i18n="error.required">This field is required.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="req-details" class="form-label" data-i18n="request.label.details">Describe Your Problem</label>
+                        <textarea id="req-details" name="details" rows="4" class="form-input" required></textarea>
+                        <span class="error-message" data-i18n="error.required">Please describe the issue.</span>
+                    </div>
+                    <button type="submit" class="btn btn-primary full-width" data-i18n="request.button.submit">Submit Request</button>
+                    <p class="form-note" data-i18n="request.note">
+                        We will forward your request to the Google Form below. No data is stored on this site.
+                    </p>
+                </form>
+                <div class="modal-thanks" aria-hidden="true">
+                    <h3 data-i18n="request.thanks.title">Thank you!</h3>
+                    <p data-i18n="request.thanks.message">
+                        Your request has been sent. A professional will contact you shortly.
+                    </p>
+                    <button class="btn btn-secondary full-width" data-i18n="request.thanks.close">Close</button>
+                </div>
+            </div>
         </div>
 
-    </main>
+        <!-- How It Works -->
+        <section id="how-it-works" class="section how-it-works-section" aria-labelledby="howworks-heading">
+            <div class="container">
+                <h2 id="howworks-heading" class="section-title" data-i18n="howworks.title">How It Works</h2>
+                <div class="steps-grid">
+                    <div class="step" data-i18n="howworks.step1.title">
+                        <h3>Choose a Service</h3>
+                        <p data-i18n="howworks.step1.text">Tap the service you need – electrician, plumber, cleaning, tutoring and more.</p>
+                    </div>
+                    <div class="step" data-i18n="howworks.step2.title">
+                        <h3>Tell Us What You Need</h3>
+                        <p data-i18n="howworks.step2.text">Fill in a short form with your location and a brief description.</p>
+                    </div>
+                    <div class="step" data-i18n="howworks.step3.title">
+                        <h3>Get Connected With a Professional</h3>
+                        <p data-i18n="howworks.step3.text">We forward your request to our Google Form; a local pro will reply directly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <footer>
-        © 2026 FRAGWN. All rights reserved.
-    </footer>
+        <!-- For Service Professionals -->
+        <section id="for-pros" class="section pros-section" aria-labelledby="pros-heading">
+            <div class="container">
+                <h2 id="pros-heading" class="section-title" data-i18n="pros.title">Grow Your Business With FRAGWN.</h2>
+                <p class="section-intro" data-i18n="pros.intro">
+                    Connect with potential customers and make your services easier to discover.
+                </p>
+                <a href="#pro-modal" class="btn btn-primary" data-i18n="pros.button.join">Join as a Professional</a>
+            </div>
+        </section>
 
-    <script>
-        function startApp() {
-            alert("FRAGWN is starting...");
-        }
+        <!-- Professional Registration Form (modal) -->
+        <div id="pro-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-pro-title">
+            <div class="modal-content">
+                <button class="modal-close" aria-label="Close form">&times;</button>
+                <h2 id="modal-pro-title" class="modal-title" data-i18n="pro.modal.title">Professional Registration</h2>
+                <form id="pro-form" class="pro-form" novalidate>
+                    <div class="form-group">
+                        <label for="pro-name" class="form-label" data-i18n="pro.label.name">Full Name</label>
+                        <input type="text" id="pro-name" name="fullName" class="form-input" required>
+                        <span class="error-message" data-i18n="error.required">This field is required.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="pro-phone" class="form-label" data-i18n="pro.label.phone">Phone Number</label>
+                        <input type="tel" id="pro-phone" name="phone" class="form-input" required>
+                        <span class="error-message" data-i18n="error.required">This field is required.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="pro-service" class="form-label" data-i18n="pro.label.service">Service Category</label>
+                        <select id="pro-service" name="service" class="form-input" required>
+                            <option value="" disabled selected>-- Select your service --</option>
+                        </select>
+                        <span class="error-message" data-i18n="error.required">Please choose a service.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="pro-area" class="form-label" data-i18n="pro.label.area">Service Area (city / pincode)</label>
+                        <input type="text" id="pro-area" name="area" class="form-input" required>
+                        <span class="error-message" data-i18n="error.required">This field is required.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="pro-desc" class="form-label" data-i18n="pro.label.description">Short Professional Description</label>
+                        <textarea id="pro-desc" name="description" rows="3" class="form-input" required></textarea>
+                        <span class="error-message" data-i18n="error.required">Please describe your offering.</span>
+                    </div>
+                    <button type="submit" class="btn btn-primary full-width" data-i18n="pro.button.submit">Submit Registration</button>
+                    <p class="form-note" data-i18n="pro.note">
+                        Submitting this form does **not** guarantee approval. We will review your details and contact you if we need more information.
+                    </p>
+                </form>
+                <div class="pro-thanks" aria-hidden="true">
+                    <h3 data-i18n="pro.thanks.title">Thank you!</h3>
+                    <p data-i18n="pro.thanks.message">
+                        We’ve received your registration and will be in touch soon.
+                    </p>
+                    <button class="btn btn-secondary full-width" data-i18n="pro.thanks.close">Close</button>
+                </div>
+            </div>
+        </div>
 
-        function explore() {
-            alert("Explore FRAGWN coming soon!");
-        }
-    </script>
+        <!-- Future Home Services (placeholder for expansion) -->
+        <section id="future" class="section future-section" aria-labelledby="future-heading">
+            <div class="container">
+                <h2 id="future-heading" class="section-title" data-i18n="future.title">Future Home Services</h2>
+                <p class="section-intro" data-i18n="future.intro">
+                    We are constantly expanding our offerings. Below are the categories we plan to add next.
+                </p>
+                <div id="future-list" class="future-list"></div>
+            </div>
+        </section>
 
-    <style>
-  #languageBox {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    z-index: 9999;
-    background: #222;
-    color: white;
-    padding: 8px;
-    border-radius: 10px;
-    border: 1px solid #777;
-  }
+        <!-- About FRAGWN -->
+        <section id="about" class="section about-section" aria-labelledby="about-heading">
+            <div class="container">
+                <h2 id="about-heading" class="section-title" data-i18n="about.title">About FRAGWN</h2>
+                <div class="about-content">
+                    <p data-i18n="about.mission"><strong>Mission:</strong> To make everyday local services simple, transparent and trustworthy for everyone.</p>
+                    <p data-i18n="about.what"><strong>What we do:</strong> FRAGWN is an online marketplace that connects customers with verified‑sounding local professionals for repairs, cleaning, tutoring, creative work and more.</p>
+                    <p data-i18n="about.why"><strong>Why customers use us:</strong> Save time, avoid guesswork, and get quotes from nearby pros without making dozens of phone calls.</p>
+                    <p data-i18n="about.vision"><strong>Vision:</strong> A city where finding a reliable plumber, electrician or tutor is as easy as ordering a coffee.</p>
+                </div>
+            </div>
+        </section>
 
-  #languageSelect {
-    background: #222;
-    color: white;
-    border: none;
-    padding: 5px;
-    font-size: 14px;
-  }
-</style>
-
-<div id="languageBox">
-  🌐
-  <select id="languageSelect" aria-label="Choose language">
-    <option value="en">English</option>
-    <option value="gu">ગુજરાતી</option>
-    <option value="hi">हिन्दी</option>
-    <option value="te">తెలుగు</option>
-  </select>
-</div>
-
-<script>
-const translations = {
-  en: {
-    home: "Home",
-    explore: "Explore",
-    login: "Login",
-    welcome: "Welcome to the next generation of social experiences, gaming and community.",
-    start: "Get Started",
-    exploreBtn: "Explore FRAGWN"
-  },
-  gu: {
-    home: "હોમ",
-    explore: "શોધો",
-    login: "લૉગિન",
-    welcome: "સામાજિક અનુભવો, ગેમિંગ અને સમુદાયની નવી પેઢીમાં તમારું સ્વાગત છે.",
-    start: "શરૂ કરો",
-    exploreBtn: "FRAGWN શોધો"
-  },
-  hi: {
-    home: "होम",
-    explore: "खोजें",
-    login: "लॉगिन",
-    welcome: "सामाजिक अनुभवों, गेमिंग और समुदाय की अगली पीढ़ी में आपका स्वागत है।",
-    start: "शुरू करें",
-    exploreBtn: "FRAGWN देखें"
-  },
-  te: {
-    home: "హోమ్",
-    explore: "అన్వేషించండి",
-    login: "లాగిన్",
-    welcome: "కొత్త తరం సామాజిక అనుభవాలు, గేమింగ్ మరియు కమ్యూనిటీకి స్వాగతం.",
-    start: "ప్రారంభించండి",
-    exploreBtn: "FRAGWN చూడండి"
-  }
-};
-
-function changeLanguage(lang) {
-  const t = translations[lang];
-  if (!t) return;
-
-  const navLinks = document.querySelectorAll("header nav a");
-  if (navLinks.length >= 3) {
-    navLinks[0].textContent = t.home;
-    navLinks[1].textContent = t.explore;
-    navLinks[2].textContent = t.login;
-  }
-
-  const welcome = document.querySelector("main.hero p");
-  if (welcome) welcome.textContent = t.welcome;
-
-  const buttons = document.querySelectorAll("main.hero .buttons button");
-  if (buttons.length >= 2) {
-    buttons[0].textContent = t.start;
-    buttons[1].textContent = t.exploreBtn;
-  }
-
-  document.documentElement.lang = lang;
-  localStorage.setItem("fragwnLanguage", lang);
-}
-
-const languageSelect = document.getElementById("languageSelect");
-const savedLanguage = localStorage.getItem("fragwnLanguage") || "en";
-
-languageSelect.value = savedLanguage;
-languageSelect.addEventListener("change", function() {
-  changeLanguage(this.value);
-});
-
-changeLanguage(savedLanguage);
-</script>
-</html>
+        <!-- Contact -->
+        <section id="contact" class="section contact-section" aria-labelledby="contact-heading">
+            <div class="container">
+                <h2 id="contact-heading" class="section-title" data-i18n="contact.title">Contact Us</h2>
+                <div class="contact-inner">
+                    <div class="contact-info">
+                        <p><strong>Email:</strong> <a href="mailto:info@fragwn.example">info@fragwn.example</a></p>
+                        <p><strong>Phone:</strong> <a href="tel:+918000000000">+91 800 000 0000</a></p>
+                        <p><strong>Address:</strong> [Add your office address here]</p>
+                    </div>
+                    <form id="contact-form" class="contact-form" novalidate>
+                        <div class="form-group">
+                            <label for="cont-name" class="form-label" data-i18n="contact.label.name">Full Name</label>
+                            <input type="text" id="cont-name" name="name" class="form-input" required>
+                            <span class="error-message" data-i18n="error.required">This field is required.</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="cont-email" class="form-label" data-i18n="contact.label.email">Email Address</label>
+                            <input type="email" id="cont-email" name="email" class="form-input" required>
+                            <span class="error-message" data-i18n="error.email">Please enter a valid email.</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="cont-message" class="form-label" data-i18n="contact.label.message">Message</label>
+                            <textarea id="cont-message" name="message" rows="4" class="form-input" required></textarea>
+                            <span class="error-message" data-i18n="error.required">Please write a message.</span>
+                        </div>
+                        <button type="submit" class="btn btn-primary" data-i18n="contact.button.submit">Send Message</button>
+                    </form>
+                </div>
+                <div class="contact-footer">
+                    <a href="#" class="link" data-i18n="footer.privacy">Privacy Policy</a>
+                    <span class="separator">|</span>
+                    <a href="#" class="link" data-i18n="footer.terms">Terms &amp; Conditions</a>
+                    <div class="social-links" aria-label="Social media">
+                        <a href="#" aria-label="Facebook" target="_blank" rel="noopener">Facebook</a>
+                        <a href="#" aria-label="Twitter" target="_blank" rel="noopener">Twitter</a>
+                        <a href="#" aria-label="Instagram" target="_blank" rel="noopener">Instagram</a>
+                        <a href="#" aria-label="LinkedIn" target="_blank" rel="noop
